@@ -1,48 +1,18 @@
 pageextension 50101 "Sales Order Ext" extends "Sales Order"
 {
-    layout
-    {
-        // Add changes to page layout here
-    }
-
-    actions
-    {
-        // Add changes to page actions here
-    }
-
     local procedure CreateSalesOrderFromTemplate()
-    var
-    // SalesHeader: Record "Sales Header";
-    // SalesOrderTempl: Codeunit "Sales Order Templ. Mgt. 2";
     begin
         if not NewMode then
             exit;
         NewMode := false;
 
         if InsertSalesOrderFromTemplate(Rec) then begin
-            // Copy(SalesHeader);
             CurrPage.Update();
 
         end else
-            // if SalesOrderTempl.TemplatesAreNotEmpty() then
-                CurrPage.Close;
+            CurrPage.Close;
     end;
 
-    trigger OnAfterGetCurrRecord()
-    begin
-        if NewMode then
-            CreateSalesOrderFromTemplate()
-    end;
-
-    trigger OnNewRecord(BelowxRec: Boolean)
-    // var
-    // DocumentNoVisibility: Codeunit DocumentNoVisibility;
-    begin
-        if GuiAllowed then
-            if Rec."No." = '' then
-                // if DocumentNoVisibility.CustomerNoSeriesIsDefault then
-                    NewMode := true;
-    end;
 
     procedure SelectSalesOrderTemplate(var SalesOrderTempl: Record "Sales Order Templ.") Result: Boolean
     var
@@ -70,22 +40,16 @@ pageextension 50101 "Sales Order Ext" extends "Sales Order"
         exit(false);
     end;
 
-    // procedure InsertSalesOrderFromTemplate(var SalesHeader: Record "Sales Header"; var IsHandled: Boolean) Result: Boolean
     procedure InsertSalesOrderFromTemplate(var SalesHeader: Record "Sales Header") Result: Boolean
     var
         SalesOrderTempl: Record "Sales Order Templ.";
     begin
-        // IsHandled := false;
-        // if IsHandled then
-        //     exit(Result);
-
-        // IsHandled := true;
-
         if not SelectSalesOrderTemplate(SalesOrderTempl) then
             exit(false);
 
         Rec.Init();
         InitSalesOrderNo(Rec, SalesOrderTempl);
+        InitSalesOrderPostingNo(Rec, SalesOrderTempl);
         Rec."Document Type" := Rec."Document Type"::Order;
         Rec."Your Reference" := SalesOrderTempl."Your Reference";
         Rec.Insert(true);
@@ -103,7 +67,31 @@ pageextension 50101 "Sales Order Ext" extends "Sales Order"
         NoSeriesManagement.InitSeries(SalesOrderTempl."No. Series", '', 0D, Rec."No.", Rec."No. Series");
     end;
 
+    procedure InitSalesOrderPostingNo(var SalesHeader: Record "Sales Header"; SalesOrderTempl: Record "Sales Order Templ.")
+    var
+        NoSeriesManagement: Codeunit NoSeriesManagement;
+    begin
+
+        if SalesOrderTempl."Posting No. Series" = '' then
+            exit;
+
+        NoSeriesManagement.InitSeries(SalesOrderTempl."Posting No. Series", '', 0D, Rec."Posting No.", Rec."Posting No. Series");
+        Message('%1', Rec."Posting No. Series");
+    end;
+
+    trigger OnAfterGetCurrRecord()
+    begin
+        if NewMode then
+            CreateSalesOrderFromTemplate()
+    end;
+
+    trigger OnNewRecord(BelowxRec: Boolean)
+    begin
+        if GuiAllowed then
+            if Rec."No." = '' then
+                NewMode := true;
+    end;
+
     var
         NewMode: Boolean;
-
 }

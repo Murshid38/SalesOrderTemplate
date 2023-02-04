@@ -16,6 +16,7 @@
             "launchBrowser": true,
             "enableLongRunningSqlStatements": true,
             "enableSqlInformationDebugger": true,
+            // "breakOnRecordWrite": true,
             "tenant": "default",
             "schemaUpdateMode": "ForceSync"
         },

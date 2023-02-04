@@ -21,12 +21,12 @@ table 50100 "Sales Order Templ."
             DataClassification = CustomerContent;
             TableRelation = "No. Series";
         }
-        // field(4; "Posting No. Series"; Code[20])
-        // {
-        //     Caption = 'Posting No. Series';
-        //     DataClassification = CustomerContent;
-        //     TableRelation = "No. Series";
-        // }
+        field(4; "Posting No. Series"; Code[20])
+        {
+            Caption = 'Posting No. Series';
+            DataClassification = CustomerContent;
+            TableRelation = "No. Series";
+        }
         field(5; "Your Reference"; Text[35])
         {
             Caption = 'Your Reference';

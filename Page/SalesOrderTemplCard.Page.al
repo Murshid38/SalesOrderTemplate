@@ -25,11 +25,11 @@ page 50101 "Sales Order Templ. Card"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the No. Series field.';
                 }
-                // field("Posting No. Series"; Rec."Posting No. Series")
-                // {
-                //     ApplicationArea = All;
-                //     ToolTip = 'Specifies the value of the Posting No. Series field.';
-                // }
+                field("Posting No. Series"; Rec."Posting No. Series")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Posting No. Series field.';
+                }
                 field("Your Reference"; Rec."Your Reference")
                 {
                     ApplicationArea = All;
