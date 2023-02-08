@@ -10,7 +10,7 @@
             "server": "http://localhost:8080/BC190",
             "serverInstance": "BC190",
             "authentication": "UserPassword",
-            "startupObjectId": 22,
+            "startupObjectId": 50102,
             "startupObjectType": "Page",
             "breakOnError": "All",
             "launchBrowser": true,
@@ -29,7 +29,8 @@
             "serverInstance": "BC190",
             "authentication": "UserPassword",
             "breakOnNext": "WebClient",
-            "executionContext": "DebugAndProfile"
+            "executionContext": "DebugAndProfile",
+            "sessionId": 12
         }
     ]
 }

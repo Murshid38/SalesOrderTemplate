@@ -36,6 +36,34 @@ page 50101 "Sales Order Templ. Card"
                     ToolTip = 'Specifies the value of the Your Reference field.';
                 }
             }
+
+            part(SalesTemplateLineSubform; "Sales Template Line Subform")
+            {
+                SubPageLink = "Template Code" = field(Code);
+                ApplicationArea = all;
+                UpdatePropagation = Both;//update subform and card in realtime
+            }
+        }
+    }
+
+    actions
+    {
+        area(Processing)
+        {
+            action("Show Amount")
+            {
+                ApplicationArea = All;
+                Image = ShowList;
+
+                trigger OnAction()
+                var
+                    SalesTemplateLine: Record "Sales Order Template Line";
+                begin
+                    // SalesTemplateLine.FindFirst();
+                    SalesTemplateLine.Get('SOTEMP01', 40000);
+                    Message('%1', SalesTemplateLine.Quantity);
+                end;
+            }
         }
     }
 }
