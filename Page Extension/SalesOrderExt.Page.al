@@ -45,6 +45,7 @@ pageextension 50101 "Sales Order Ext" extends "Sales Order"
         SalesOrderTempl: Record "Sales Order Templ.";
         SalesOrderTemplLine: Record "Sales Order Template Line";
         SalesLine: Record "Sales Line";
+        SelectSellToCustomer: Page "Select Sell To Customer";
     begin
         if not SelectSalesOrderTemplate(SalesOrderTempl) then
             exit(false);
@@ -54,7 +55,12 @@ pageextension 50101 "Sales Order Ext" extends "Sales Order"
             InitSalesOrderNo(Rec, SalesOrderTempl);
             InitSalesOrderPostingNo(Rec, SalesOrderTempl);
             Rec."Document Type" := Rec."Document Type"::Order;
-            Rec.Validate("Sell-to Customer No.", '30000');
+            Commit();
+
+            if SelectSellToCustomer.RunModal() = Action::OK then begin
+                Rec.Validate("Sell-to Customer No.", SelectSellToCustomer.GetSellToCustomer());
+            end;
+
             Rec."Your Reference" := SalesOrderTempl."Your Reference";
             Rec.Insert(true);
 
