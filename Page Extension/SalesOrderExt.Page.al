@@ -49,25 +49,28 @@ pageextension 50101 "Sales Order Ext" extends "Sales Order"
         if not SelectSalesOrderTemplate(SalesOrderTempl) then
             exit(false);
 
-        Rec.Init();
-        InitSalesOrderNo(Rec, SalesOrderTempl);
-        InitSalesOrderPostingNo(Rec, SalesOrderTempl);
-        Rec."Document Type" := Rec."Document Type"::Order;
-        Rec.Validate("Sell-to Customer No.", '30000');
-        Rec."Your Reference" := SalesOrderTempl."Your Reference";
-        Rec.Insert(true);
+        if SalesOrderTempl.Get(SalesOrderTempl.Code) then begin
+            Rec.Init();
+            InitSalesOrderNo(Rec, SalesOrderTempl);
+            InitSalesOrderPostingNo(Rec, SalesOrderTempl);
+            Rec."Document Type" := Rec."Document Type"::Order;
+            Rec.Validate("Sell-to Customer No.", '30000');
+            Rec."Your Reference" := SalesOrderTempl."Your Reference";
+            Rec.Insert(true);
 
-        SalesOrderTemplLine.FindFirst();
-
-        SalesLine.Init();
-        SalesLine."Document Type" := Rec."Document Type"::Order;
-        SalesLine."Document No." := Rec."No.";
-        SalesLine."Line No." := SalesOrderTemplLine."Line No.";
-        SalesLine.Validate(Type, SalesOrderTemplLine.Type);
-        SalesLine.Validate("No.", SalesOrderTemplLine."No.");
-        SalesLine.Validate(Quantity, SalesOrderTemplLine.Quantity);
-        SalesLine.Insert(true);
-
+            SalesOrderTemplLine.SetRange("Template Code", SalesOrderTempl.Code);
+            SalesOrderTemplLine.FindSet();
+            repeat
+                SalesLine.Init();
+                SalesLine."Document Type" := Rec."Document Type"::Order;
+                SalesLine."Document No." := Rec."No.";
+                SalesLine."Line No." := SalesOrderTemplLine."Line No.";
+                SalesLine.Validate(Type, SalesOrderTemplLine.Type);
+                SalesLine.Validate("No.", SalesOrderTemplLine."No.");
+                SalesLine.Validate(Quantity, SalesOrderTemplLine.Quantity);
+                SalesLine.Insert(true);
+            until SalesOrderTemplLine.Next() = 0;
+        end;
 
         CurrPage.Close();
         Page.Run(42, Rec);
